@@ -71,18 +71,18 @@ namespace WavingBanner
             restoreDelayText.text = text;
         }
 
-        private static int GetRangedValue(InputField inputField, int maxValue, int minValue)
+        private static int GetRangedValue(InputField inputField, int minValue, int maxValue)
         {
             int value;
             
             if (string.IsNullOrEmpty(inputField.text))
             {
-                value =  MIN_BANNER_SIZE;
+                value =  minValue;
             }
             else
             {
                 value = int.Parse(inputField.text);
-                value = math.clamp(value, maxValue, minValue);
+                value = math.clamp(value, minValue, maxValue);
             }
             
             inputField.text = value.ToString();
