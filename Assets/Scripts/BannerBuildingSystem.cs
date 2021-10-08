@@ -10,15 +10,13 @@ namespace WavingBanner
     {
         private readonly Queue<RestoreRecord> _restoreRecords = new Queue<RestoreRecord>();
         
-        private NativeArray<Entity> _cubes;
         private BannerWavingSystem _bannerWavingSystem;
+        private EntityQuery _cubeQuery;
         
-        public void Build()
+        public void BuildBanner()
         {
             var bannerSize = Banner.Size;
 
-            _cubes = new NativeArray<Entity>(bannerSize.x * bannerSize.y, Allocator.Persistent);
-            
             for (var i = 0; i < bannerSize.x; i++)
             {
                 for (var j = 0; j < bannerSize.y; j++)
@@ -29,11 +27,12 @@ namespace WavingBanner
             }
         }
 
-        public void Clear()
+        public void ClearBanner()
         {
             _restoreRecords.Clear();
-            EntityManager.DestroyEntity(_cubes);
-            _cubes.Dispose();
+            
+            using var cubes = _cubeQuery.ToEntityArray(Allocator.Temp);
+            EntityManager.DestroyEntity(cubes);
         }
 
         public void DestroyCube(Entity cube)
@@ -41,15 +40,17 @@ namespace WavingBanner
             var cubeIndex = EntityManager.GetComponentData<CubeIndex>(cube).Value;
             var restoreTimestamp = (float)Time.ElapsedTime + Banner.RestoreCubeDelay;
             var restoreRecord = new RestoreRecord(restoreTimestamp, cubeIndex);
-            _restoreRecords.Enqueue(restoreRecord);
             
+            _restoreRecords.Enqueue(restoreRecord);
             EntityManager.DestroyEntity(cube);
         }
         
         protected override void OnStartRunning()
         {
             _bannerWavingSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<BannerWavingSystem>();
-            Build();
+            _cubeQuery = GetEntityQuery(typeof(CubeIndex));
+            
+            BuildBanner();
         }
 
         protected override void OnUpdate()
@@ -60,11 +61,6 @@ namespace WavingBanner
             {
                 InstantiateCube(_restoreRecords.Dequeue().Index);
             }
-        }
-
-        protected override void OnDestroy()
-        {
-            _cubes.Dispose();
         }
 
         private void InstantiateCube(int2 index)
@@ -82,10 +78,6 @@ namespace WavingBanner
             var sectorIndex = index.y / Banner.SectorSize;
             var colorOffset = new ColorOffset { Value = (float)sectorIndex / (Banner.SectorCount + 1) };
             EntityManager.SetComponentData(cubeEntity, colorOffset);
-            
-            var linerIndex = index.x + index.y * Banner.Size.x;
-
-            _cubes[linerIndex] = cubeEntity;
         }
 
         private readonly struct RestoreRecord

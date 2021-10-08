@@ -30,7 +30,7 @@ namespace WavingBanner
             
             Banner.SetColorTime(wavingTime);
 
-            Entities.ForEach((ref Translation translation, in CubeIndex _) =>
+            Entities.WithAll<CubeIndex>().ForEach((ref Translation translation) =>
             {
                 translation.Value.z = GetCubeZPosition(wavingTime, translation.Value.xy);
             }).Schedule();

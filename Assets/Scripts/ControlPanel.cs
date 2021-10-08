@@ -49,8 +49,8 @@ namespace WavingBanner
             UpdateRestoreDelayText(true);
             
             var bannerBuildingSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<BannerBuildingSystem>();
-            bannerBuildingSystem.Clear();
-            bannerBuildingSystem.Build();
+            bannerBuildingSystem.ClearBanner();
+            bannerBuildingSystem.BuildBanner();
         }
 
         public void UpdateRestoreDelayText(bool isApplied)
