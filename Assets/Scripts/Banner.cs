@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using UnityEngine;
 
 namespace WavingBanner
@@ -19,15 +20,18 @@ namespace WavingBanner
         private const string HEIGHT_PREFS_KEY = "Banner Height";
         private const string RESTORE_CUBE_DELAY_PREFS_KEY = "Restore Cube Delay";
         private const string SECTOR_COUNT_PREFS_KEY = "Sector Count";
+        private static readonly int COLOR_TIME = Shader.PropertyToID("_ColorTime");
 
         public static Entity CubeSourceEntity;
-        
+
         [SerializeField] private GameObject cubePrefab;
 
         private static int2 _size;
         private static float _restoreCubeDelay;
         private static int _sectorCount;
-        
+        private static bool _isWavingPaused;
+        private static Material _cubeMaterial;
+
         public static int2 Size
         {
             get => _size;
@@ -72,11 +76,27 @@ namespace WavingBanner
         public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             CubeSourceEntity = conversionSystem.GetPrimaryEntity(cubePrefab);
+            _cubeMaterial = World.DefaultGameObjectInjectionWorld.EntityManager.GetSharedComponentData<RenderMesh>(CubeSourceEntity).material;
         }
 
         public void DeclareReferencedPrefabs(List<GameObject> referencedPrefabs)
         {
             referencedPrefabs.Add(cubePrefab);
+        }
+
+        public static bool PauseWaving()
+        {
+            _isWavingPaused = !_isWavingPaused;
+
+            var bannerWavingSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<BannerWavingSystem>();
+            bannerWavingSystem.Enabled = !_isWavingPaused;
+            
+            return _isWavingPaused;
+        }
+
+        public static void SetColorTime(float time)
+        {
+            _cubeMaterial.SetFloat(COLOR_TIME, time);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -88,6 +108,7 @@ namespace WavingBanner
             _size = new int2(width, height);
             _restoreCubeDelay = PlayerPrefs.GetFloat(RESTORE_CUBE_DELAY_PREFS_KEY, DEFAULT_RESTORE_CUBE_DELAY);
             SectorCount = PlayerPrefs.GetInt(SECTOR_COUNT_PREFS_KEY, DEFAULT_SECTOR_COUNT);
+            _isWavingPaused = false;
         }
     }
 }

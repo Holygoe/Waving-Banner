@@ -34,8 +34,10 @@ Material:
     m_Ints: []
     m_Floats:
     - ColorOffset: 0
-    - ColorSpeed: 0.05
+    - ColorSpeed: 1.14
     - _ColorOffset: 0
+    - _ColorSpeed: 0.05
+    - _ColorTime: 17.187462
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

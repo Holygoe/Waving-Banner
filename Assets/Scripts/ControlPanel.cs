@@ -33,14 +33,7 @@ namespace WavingBanner
 
         public void Pause()
         {
-            var isPause = Time.timeScale != 0;
-            
-            Time.timeScale = isPause ? 0 : 1;
-            
-            var bannerWavingSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<BannerWavingSystem>();
-            bannerWavingSystem.Enabled = !isPause;
-
-            pauseText.text = isPause ? "Play" : "Pause";
+            pauseText.text = Banner.PauseWaving() ? "Play" : "Pause";
         }
 
         public void Apply()

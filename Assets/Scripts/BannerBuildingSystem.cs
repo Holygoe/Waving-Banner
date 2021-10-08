@@ -8,9 +8,11 @@ namespace WavingBanner
 {
     public class BannerBuildingSystem : SystemBase
     {
-        private NativeArray<Entity> _cubes;
         private readonly Queue<RestoreRecord> _restoreRecords = new Queue<RestoreRecord>();
-
+        
+        private NativeArray<Entity> _cubes;
+        private BannerWavingSystem _bannerWavingSystem;
+        
         public void Build()
         {
             var bannerSize = Banner.Size;
@@ -46,6 +48,7 @@ namespace WavingBanner
         
         protected override void OnStartRunning()
         {
+            _bannerWavingSystem = World.DefaultGameObjectInjectionWorld.GetExistingSystem<BannerWavingSystem>();
             Build();
         }
 
@@ -70,11 +73,8 @@ namespace WavingBanner
                     
             var cubeData = new CubeIndex { Value = index };
             var position = (float2)index * Banner.CUBE_SPACING - (float2)Banner.Size * Banner.CUBE_SPACING / 2;
-            
-            var cubeTranslation = new Translation
-            {
-                Value = new float3(position, 0)
-            };
+            var zPosition = _bannerWavingSystem.GetCubeZPosition(position);
+            var cubeTranslation = new Translation { Value = new float3(position, zPosition) };
                     
             EntityManager.SetComponentData(cubeEntity, cubeData);
             EntityManager.SetComponentData(cubeEntity, cubeTranslation);

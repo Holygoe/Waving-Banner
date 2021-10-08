@@ -1,4 +1,3 @@
-using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -11,15 +10,29 @@ namespace WavingBanner
         private const float WAVING_SIZE = 15f;
         private const float WAVING_VERTICAL_OFFSET = 0.1f;
         private const float WAVING_AMPLITUDE = 3f;
+
+        private float _wavingTime;
+
+        public float GetCubeZPosition(float2 cubePosition)
+        {
+            return GetCubeZPosition(_wavingTime, cubePosition);
+        }
         
-        [BurstCompile]
+        protected override void OnCreate()
+        {
+            _wavingTime = 0;
+        }
+
         protected override void OnUpdate()
         {
-            var elapsedTime = (float) Time.ElapsedTime;
+            _wavingTime += Time.DeltaTime;
+            var wavingTime = _wavingTime;
+            
+            Banner.SetColorTime(wavingTime);
 
             Entities.ForEach((ref Translation translation, in CubeIndex _) =>
             {
-                translation.Value.z = GetCubeZPosition(elapsedTime, translation.Value.xy);
+                translation.Value.z = GetCubeZPosition(wavingTime, translation.Value.xy);
             }).Schedule();
         }
 
