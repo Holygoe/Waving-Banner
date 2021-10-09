@@ -65,19 +65,18 @@ namespace WavingBanner
 
         private void InstantiateCube(int2 index)
         {
-            var cubeEntity = EntityManager.Instantiate(Banner.CubeSourceEntity);
-                    
-            var cubeData = new CubeIndex { Value = index };
+            var cube = EntityManager.Instantiate(Banner.CubeSourceEntity);
+            
+            EntityManager.SetComponentData(cube, new CubeIndex { Value = index });
+            
             var position = (float2)index * Banner.CUBE_SPACING - (float2)Banner.Size * Banner.CUBE_SPACING / 2;
             var zPosition = _bannerWavingSystem.GetCubeZPosition(position);
             var cubeTranslation = new Translation { Value = new float3(position, zPosition) };
-                    
-            EntityManager.SetComponentData(cubeEntity, cubeData);
-            EntityManager.SetComponentData(cubeEntity, cubeTranslation);
+            EntityManager.SetComponentData(cube, cubeTranslation);
 
             var sectorIndex = index.y / Banner.SectorSize;
             var colorOffset = new ColorOffset { Value = (float)sectorIndex / (Banner.SectorCount + 1) };
-            EntityManager.SetComponentData(cubeEntity, colorOffset);
+            EntityManager.SetComponentData(cube, colorOffset);
         }
 
         private readonly struct RestoreRecord
