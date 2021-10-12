@@ -515,7 +515,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 8146759193491746824, guid: 594a8c59c103d4b40acf0ba84eb538a7, type: 3}
-  cubeMaterial: {fileID: 2100000, guid: 0e70cced61aec974191b52b43f9e582c, type: 2}
 --- !u!4 &177732377
 Transform:
   m_ObjectHideFlags: 0
@@ -1906,7 +1905,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 13.700012, y: -18.5}
+  m_AnchoredPosition: {x: 13.699951, y: -18.5}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &927514823
@@ -2092,7 +2091,6 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194231}
   - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
@@ -2212,19 +2210,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceSlider: {fileID: 332090875}
   rotationSlider: {fileID: 611025138}
---- !u!114 &963194231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 696688ad61385fa48899cd7d0d84a67f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camera: {fileID: 963194227}
 --- !u!1 &996335218
 GameObject:
   m_ObjectHideFlags: 0
